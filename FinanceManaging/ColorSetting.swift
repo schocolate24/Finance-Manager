@@ -24,7 +24,7 @@ struct ColorData {
         guard let array = userDefaults.object(forKey: ColorKey) as?
                 [CGFloat] else { return Color.cyan }
         
-        let color = Color(.sRGB, red: array[0], green: array[1], blue: array[2], opacity: array[3])
+        let color = Color(.sRGB, red: array[0], green: array[1], blue: array[2])
         
         print(color)
         print("Color loaded.")
@@ -32,41 +32,85 @@ struct ColorData {
     }
 }
 
+class ColorTheme: ObservableObject {
+    @Published var cc: Color = Color.purple
+}
+
+
+struct CustomcolorPicker: View {
+    @Binding var selectedColor: Color
+    private let colors: [Color] =
+    [Color("Color 1"),
+     Color("Color 2"),
+     Color("Color 3"),
+     Color("Color 4"),
+     Color("Color 5"),
+     Color("Color 6"),
+     Color("Color 7"),
+     Color("Color 8"),
+     Color("Color 9")
+    ]
+                                   
+    var body: some View {
+        
+        let columns = [GridItem(.adaptive(minimum: 80))]
+        HStack {
+            LazyVGrid(columns: columns, spacing: 40) {
+                ForEach(colors, id: \.self) { color in
+                    Circle()
+                        .foregroundColor(color)
+                        .frame(width: 45, height: 45)
+                        .onTapGesture {
+                            selectedColor = color
+                        }
+                }
+            }
+        }
+        .frame(maxHeight: 350)
+    }
+}
 
 struct ColorSetting: View {
-
-    @State private var choosenColor: Color = Color.cyan
-    private var colorData = ColorData()
+    @EnvironmentObject var chosenColor: ColorTheme // Get the object from the environment
+    @State private var selected: Color = .red
+    var colorData = ColorData()
 
     var body: some View {
         ZStack {
-            choosenColor
+            chosenColor.cc
                 .edgesIgnoringSafeArea(.all)
             Color.white
             
             VStack {
                 Text("Color Theme")
-                    .foregroundColor(choosenColor)
+                    .foregroundColor(chosenColor.cc)
                     .font(.largeTitle)
-                    .padding(.top, -180)
-            
-                ColorPicker("Select a color", selection: $choosenColor, supportsOpacity: true)
+                
+                Divider()
+                    .frame(width: 200, height: 2)
+                    .background(chosenColor.cc.opacity(0.7))
+                    .padding(.horizontal, 10)
+                    .padding(.top, -10)
+                
+                CustomcolorPicker(selectedColor: $chosenColor.cc)
                     .padding()
                     .cornerRadius(10)
                     .font(.system(size: 20))
                     .padding(50)
+                    .padding(.bottom, -30
+                    )
                 
                 Button("Save") {
-                    colorData.save(color: choosenColor)
+                    colorData.save(color: chosenColor.cc)
                 }
                 .padding()
-                .background(choosenColor)
+                .background(chosenColor.cc)
                 .font(.system(size: 20))
                 .cornerRadius(10)
                 .foregroundColor(.white)
                 .padding()
                 .onAppear {
-                    choosenColor = colorData.loadColor()
+                    chosenColor.cc = colorData.loadColor()
                 }
             }
         }

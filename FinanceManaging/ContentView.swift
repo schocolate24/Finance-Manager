@@ -7,16 +7,20 @@
 
 
 /*---------------------------------------
- 1. AddSpent and IncomeView have textFields to add spent and income but there's a common
-error that is when you tap the save buttons typed integers don't go back to 0 except when
-you push the enter key after you typed the amount and before you tap the save button since
-for some reason it shows the correct form of the currency format
 
- 2. Income view's form is looking bad so needs a fix
- 
- 3. you can now select your prefferd currency but the stored data doesn't change upon the changed currency type for example:
-    $5 -> ¥5 Since $1 is about ¥100, this doesn't make sense
-    rather then changing the whole thing, I guess it'll be a good idea not to change the currency type of existing data....
+ # AddSpent and IncomeView have textFields to add spent and income but there's a common
+   error that is when you tap the save buttons typed integers don't go back to 0 except when
+   you push the enter key after you typed the amount and before you tap the save button since
+   for some reason it shows the correct form of the currency format
+
+ # you can now select your prefferd currency but the stored data doesn't change upon the changed currency type for example:
+   $5 -> ¥5 Since $1 is about ¥100, this doesn't make sense
+   rather then changing the whole thing, I guess it'll be a good idea not to change the currency type of existing data....
+   or that might be a good idea to separate the lists of spending and income based on the currency type
+
+ # the display of currency type needs a fix
+
+ # done and edit button on past expences
 --------------------------------------- */
 
 import Charts
@@ -29,9 +33,12 @@ struct ContentView: View {
     @State private var avarageSpentOfThePreviousMonth = 0
     @State private var showMenu: Bool = false
     @StateObject private var viewModel = ViewModel()
+    @EnvironmentObject var chosenColor: ColorTheme // Get the object from the environment
+
     var spent = AddSpent()
     var security = SecuritySetting()
     
+    var pastSpent = PastSpent()
     
     var body: some View {
 //            if viewModel.isUnlocked {
@@ -69,7 +76,7 @@ struct ContentView: View {
                                 } else {
                                     Image(systemName: "text.justify")
                                         .font(.system(size: 20))
-                                        .foregroundColor(.cyan)
+                                        .foregroundColor(chosenColor.cc)
                                         .font(.title)
                                 }
                             }

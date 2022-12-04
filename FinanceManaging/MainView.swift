@@ -37,11 +37,12 @@ struct MainView: View {
         .init(date: .sunday, amount: 7)
     ]
     
-    var color = ColorSetting()
-
+    @EnvironmentObject var chosenColor: ColorTheme // Get the object from the environment
+    @State private var showColorSetting = false // Add this to access ColorSetting
 
     var body: some View {
         ZStack {
+            chosenColor.cc.opacity(0.5)
             Chart(data) { data in
                 BarMark(
                     x: .value("Date", data.date.rawValue),

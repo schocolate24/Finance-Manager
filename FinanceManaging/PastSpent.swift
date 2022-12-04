@@ -6,70 +6,100 @@
 //
 
 import SwiftUI
+import CoreData
+
 
 struct PastSpent: View {
+    
+    enum SortType: String, CaseIterable {
+        case date
+        case expensive
+        case cheap
+    }
+    @State var sort = SortType.date
+    
     @Environment(\.managedObjectContext) var moc
     @FetchRequest(sortDescriptors: []) var finances: FetchedResults<Finance>
-    
-    @State var totalAmount = [Double]()
-    @State var spending = 0.0
-    @State var sum = 0.0
-    
-    var currencySetting = CurrencySetting()
-    
+    @EnvironmentObject var chosenColor: ColorTheme // Get the object from the environment
+    var addspent = AddSpent()
+
     var body: some View {
         NavigationView {
-            List {
-                ForEach(finances) { finance in
-                    HStack {
-                        VStack(alignment: .leading) {
-                            Text(finance.name ?? "")
-                            Text("\(finance.spending, format: .currency(code: currencySetting.currency))")
-                                .padding(.trailing)
-                        }
-                        Text((finance.date?.formatted())!)
+            VStack {
+                Picker("sort by...", selection: $sort) {
+                    ForEach(SortType.allCases, id: \.self) { item in
+                        Text(item.rawValue)
                     }
                 }
-                .onDelete(perform: deleteSpending)
-            }
-            .navigationTitle("Past Spendings")
-            .navigationBarTitleDisplayMode(.inline)
-            .toolbar {
-                ToolbarItem(placement: .navigationBarLeading) {
-                    EditButton()
-                        .foregroundColor(.cyan)
+                .padding()
+                .background(chosenColor.cc.opacity(0.3))
+                .cornerRadius(10)
+                .padding()
+                .pickerStyle(.segmented)
+                List {
+                    ForEach(sortingOptions) { finance in
+                        HStack {
+                            VStack(alignment: .leading) {
+                                Text(finance.name ?? "")
+                                    .foregroundColor(chosenColor.cc)
+                                Text(finance.category ?? "")
+                                    .foregroundColor(.secondary)
+                            }
+                            Spacer()
+                            VStack {
+                                Text("\(finance.spending, format: .currency(code: finance.currency ?? "USD"))")
+                                    .font(.headline)
+                                
+                                Text((finance.date?.displayFormat)!)
+                                    .foregroundColor(.secondary)
+                            }
+                        }
+                    }
+                    .onDelete(perform: deleteSpending)
+                } // the end of the List
+                .navigationTitle("Past Spendings")
+                .navigationBarTitleDisplayMode(.inline)
+                .toolbar {
+                    ToolbarItem(placement: .navigationBarLeading) {
+                        EditButton()
+                            .foregroundColor(chosenColor.cc)
+                    }
                 }
             }
         }
     }
-  
+    
     func deleteSpending(at offsets: IndexSet) {
         for offset in offsets {
             let finance = finances[offset]
             moc.delete(finance)
         }
         try? moc.save()
-        
-        spending = 0.0
     }
     
-//    func total(amount _ : Double) -> Double {
-//        totalAmount.append(spending)
-//        sum = totalAmount.reduce(0, +)
-//        let am = (sum * 100).rounded() / 100
-//
-//        return am
-//    }
-    
-    var formattedDate: String {
-       let format = Date().formatted(date: .abbreviated, time: .omitted)
-       
-       return format
+    var sortingOptions: [Finance] {
+        switch sort {
+        case .date:
+            return finances.sorted { $0.date! > $1.date! }
+        case .expensive:
+            return finances.sorted { $0.spending > $1.spending }
+        case .cheap:
+            return finances.sorted { $0.spending < $1.spending }
+        }
     }
 }
+    
+    extension Date {
+        var displayFormat: String {
+            self.formatted(
+               .dateTime.month().day().weekday()
+            )
+        }
+    }
 
 struct PastSpent_Previews: PreviewProvider {
     static var previews: some View {
         PastSpent()
     }
 }
+
