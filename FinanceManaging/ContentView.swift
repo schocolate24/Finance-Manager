@@ -29,7 +29,7 @@ import SwiftUI
 
 struct ContentView: View {
     @Environment(\.managedObjectContext) var moc
-    @FetchRequest(sortDescriptors: []) var finance: FetchedResults<Finance>
+    @FetchRequest(entity: Finance.entity(),  sortDescriptors: []) var finance: FetchedResults<Finance>
     @State private var avarageSpentOfThePreviousMonth = 0
     @State private var showMenu: Bool = false
     @StateObject private var viewModel = ViewModel()

@@ -7,8 +7,26 @@
 
 import CoreData
 import Foundation
+import SwiftUI
 
 class DataController: ObservableObject {
+    @FetchRequest(entity: Finance.entity(),  sortDescriptors: []) var finance: FetchedResults<Finance>
+
+    @Environment(\.managedObjectContext) var managedObjectContext
+    
+    var currencyUsd: [Finance] {
+        finance.filter { $0.currency == "USD"}
+    }
+    var currencyMxn: [Finance] {
+        finance.filter { $0.currency == "MXN"}
+    }
+    var currencyJpy: [Finance] {
+        finance.filter { $0.currency == "JPY"}
+    }
+    var currencyEur: [Finance] {
+        finance.filter { $0.currency == "EUR"}
+    }
+    
     let container = NSPersistentContainer(name: "Finance")
     
     init() {

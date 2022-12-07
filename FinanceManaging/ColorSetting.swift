@@ -97,8 +97,7 @@ struct ColorSetting: View {
                     .cornerRadius(10)
                     .font(.system(size: 20))
                     .padding(50)
-                    .padding(.bottom, -30
-                    )
+                    .padding(.bottom, -30)
                 
                 Button("Save") {
                     colorData.save(color: chosenColor.cc)

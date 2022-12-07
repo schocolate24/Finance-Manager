@@ -9,8 +9,9 @@ import SwiftUI
 
 @main
 struct FinanceManagingApp: App {
-    @StateObject private var dataController = DataController()
+    @StateObject var dataController = DataController()
     @StateObject var chosenColor = ColorTheme() // Initialize ColorTheme right at the start of the app
+    
     var colorData = ColorData()
     
     var body: some Scene {

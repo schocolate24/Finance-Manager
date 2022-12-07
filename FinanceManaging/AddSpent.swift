@@ -9,9 +9,7 @@ import SwiftUI
 
 class Currency: ObservableObject {
     let moneyType = ["USD", "MXN", "JPY", "EUR"]
-
 }
-
 
 struct AddSpent: View {
     @Environment(\.managedObjectContext) var moc
@@ -116,15 +114,3 @@ struct AddSpent_Previews: PreviewProvider {
         AddSpent()
     }
 }
-
-//enum Currency: String {
-//    case USD
-// ...
-//    var code: String { return self.rawValue }
-//    var symbol: String {
-//        switch self {
-//            case .USD: return "$"
-//            // ...
-//}
-//}
-//}
