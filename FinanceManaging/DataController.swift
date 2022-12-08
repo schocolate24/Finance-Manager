@@ -10,7 +10,7 @@ import Foundation
 import SwiftUI
 
 class DataController: ObservableObject {
-    @FetchRequest(entity: Finance.entity(),  sortDescriptors: []) var finance: FetchedResults<Finance>
+    @FetchRequest(sortDescriptors: []) var finance: FetchedResults<Finance>
 
     @Environment(\.managedObjectContext) var managedObjectContext
     

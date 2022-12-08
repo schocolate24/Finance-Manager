@@ -10,7 +10,7 @@ import SwiftUI
 struct IncomeView: View {
     @Environment(\.managedObjectContext) var moc
     @Environment(\.dismiss) var dismiss
-    @FetchRequest(entity: Finance.entity(),  sortDescriptors: []) var incomes: FetchedResults<Income>
+    @FetchRequest(sortDescriptors: []) var incomes: FetchedResults<Income>
     @FocusState private var amountIsFocused: Bool
     @State private var income = 0.0
     @EnvironmentObject var chosenColor: ColorTheme // Get the object from the environment
