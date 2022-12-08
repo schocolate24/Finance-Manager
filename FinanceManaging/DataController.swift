@@ -9,10 +9,9 @@ import CoreData
 import Foundation
 import SwiftUI
 
-class DataController: ObservableObject {
-    @FetchRequest(sortDescriptors: []) var finance: FetchedResults<Finance>
 
-    @Environment(\.managedObjectContext) var managedObjectContext
+class DataController: ObservableObject {
+    @FetchRequest(entity: Finance.entity(), sortDescriptors: []) var finance: FetchedResults<Finance>
     
     var currencyUsd: [Finance] {
         finance.filter { $0.currency == "USD"}
